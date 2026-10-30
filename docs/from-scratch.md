@@ -86,8 +86,8 @@ fresh at banner size and slots into that material unchanged:
   `inkscape assets/wii-logo.svg --export-type=png --export-width=1600 --export-area-drawing`.
   It's laid into the static at the frame's darkest level, as in the icon,
   squeezed a little so it comes out true on the non-square banner texels. It
-  sits centered in rows 0–342, the part the Menu's button panel leaves
-  visible.
+  sits just below the middle of rows 0–342, the part the Menu's button panel
+  leaves visible.
 - **Gradients:** the sheen (8×384 I8) and the scanline band (8×64 I8) are
   Nintendo's, resampled smoothly to banner height.
 

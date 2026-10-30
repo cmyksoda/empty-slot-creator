@@ -79,8 +79,6 @@ Curious how it works? See [docs/how-it-works.md](docs/how-it-works.md). Want to 
 one on a PC instead? See [docs/from-scratch.md](docs/from-scratch.md) and
 [docs/using-our-wad.md](docs/using-our-wad.md).
 
----
-
 ## Credits
 
 - **Nintendo** for the Wii Menu's empty-slot layout. The build reads it from your own System Menu.
