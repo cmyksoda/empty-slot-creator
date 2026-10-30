@@ -1,0 +1,24 @@
+# build output and scratch
+build/out/
+build/extracted/
+build/.venv/
+__pycache__/
+*.pyc
+
+# third-party inputs the build needs; see README.md for where to get them
+donor/
+build/tools/benzin/
+
+*.bak
+*.zip
+
+# forwarder build output
+forwarder/forwarder.elf
+forwarder/forwarder.dol
+
+# notes and scratch data
+project-notes/
+project-data/
+
+# built WADs carry the System Menu's own empty-slot art, so they stay out of the repo
+*.wad

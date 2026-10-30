@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<app version="1">
+	<name>Empty Slot Creator</name>
+	<coder>cmyksoda</coder>
+	<version>1.0.0</version>
+	<release_date>20261029</release_date>
+	<short_description>Create invisible forwarder channels</short_description>
+	<long_description>Pick a homebrew app and get a WAD for a channel that looks like an unused slot on the Wii Menu and opens that app. The WAD is saved to sd:/wad; install it with a WAD manager such as YAWMM ModMii Edition.</long_description>
+	<ahb_access/>
+</app>

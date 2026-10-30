@@ -1,0 +1,7 @@
+# build output
+build/
+*.elf
+boot.dol
+
+# copies of the parent build's WADs (make templates)
+data/
