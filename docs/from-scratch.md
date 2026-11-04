@@ -1,7 +1,7 @@
 # Building an Empty Slot channel from scratch
 
 This walks through every piece of the channel, and how `build/build.sh` makes
-each one. Follow it to rebuild ours, or as a recipe for your own
+each one. Use it to rebuild ours, or as a recipe for your own
 "looks like something else" channel.
 
 ## What you need
@@ -28,15 +28,17 @@ the devkitPro MSYS2 shell. The steps below are what it does.
 A channel's boot content is a DOL that the Wii runs straight from NAND. Ours is
 tiny:
 
-1. `fatMountSimple("sd", …)`, then look for the path stored after `FWDPATH=`.
+1. Set up a plain black screen with libogc (see the second trap below), then
+   `fatMountSimple("sd", …)` and look for the path stored after `FWDPATH=`.
    If it's not there, mount USB (retrying while the drive spins up) and look
    there.
 2. Read the file into MEM2 and work out where its sections go (DOL header or
    ELF program headers).
 3. Copy a small position-independent stub to `0x93000000`, shut down
    SD/USB/libogc, and jump to the stub. The stub copies the app's sections into
-   place, writes the `argv` block (the app's path), flushes caches and jumps to
-   the app's entry point.
+   place, writes the `argv` block (the app's path), installs a system call
+   handler at `0x80000C00` (the third trap), flushes caches and jumps to the
+   app's entry point.
 
 The stub in step 3 has to live in MEM2 because the app usually loads exactly
 where the forwarder is running (`0x80004000`).
@@ -48,6 +50,21 @@ channel shows a black screen forever. `stub.S` is that stub: it sets HID0, maps
 MEM1 and MEM2 with BATs, turns address translation on and jumps to
 `__app_start`. The Makefile pins it with `-Wl,--section-start,.stub=0x80003400`.
 If you build a channel DOL with current devkitPPC, you need the same.
+
+**The second trap:** on a real Wii, a dolxz-compressed app (every GodModeWii
+release since 0.6.0) froze when the forwarder left the screen exactly as the
+Wii Menu had it. Dolphin started it fine. Setting up a black screen with the
+forwarder's own libogc before the hand-off fixed it on hardware. Which part of
+the Menu's video state the app trips on isn't pinned down. The framebuffer sits
+just under `0x817C0000`, where dolxz puts its second-stage loader and `argv`.
+
+**The third trap:** dolxz's loader flushes the cache, which ends in a system
+call (`sc`), before it installs its own system call handler. Older libogc left a
+self-contained handler at `0x80000C00`; libogc 3 leaves a vector there that
+jumps into the forwarder's code, which the app has already overwritten, so the
+console hangs. Booting the app directly hides this, because with no `argv`
+dolxz skips that flush. `stub.S` carries the same 44-byte handler dolxz
+installs, and the stub copies it to `0x80000C00` before anything else.
 
 Build: `make -C forwarder` → `forwarder/forwarder.dol`.
 

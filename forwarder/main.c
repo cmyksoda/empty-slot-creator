@@ -41,10 +41,13 @@ typedef struct {
 typedef struct {
     u32 entry, count;
     struct __argv args;
-    segment seg[18];
+    segment seg[19];
 } plan;
 
+extern const u8 sc_handler[], sc_handler_end[];
+
 #define STUB_ADDR 0x93000000
+#define DOLXZ_HIGH 0x817C0000
 #define STUB_SIZE 0x400
 
 /* Runs from MEM2 after being copied there, so it may overwrite this program.
@@ -93,7 +96,7 @@ static void plan_dol(plan *p, const u8 *file)
 static void plan_elf(plan *p, const u8 *file)
 {
     const elf_header *h = (const elf_header *)file;
-    for (int i = 0; i < h->phnum && p->count < 18; i++) {
+    for (int i = 0; i < h->phnum && p->count < 19; i++) {
         const elf_segment *s = (const elf_segment *)(file + h->phoff + i * h->phentsize);
         if (s->type == 1 && s->memsz)
             add(p, s->paddr, file + s->offset, s->filesz, s->memsz);
@@ -148,16 +151,29 @@ static u8 *find_app(const char *rel, char *full, u32 *size)
     return NULL;
 }
 
-static void fail(const char *rel)
+/* A black screen set up by this libogc before the hand-off, rather than whatever the Wii Menu left.
+   High in MEM1, as the app is copied in low, but under dolxz's loader and argv at 0x817C0000. */
+static void screen(void)
 {
     VIDEO_Init();
     GXRModeObj *mode = VIDEO_GetPreferredMode(NULL);
-    void *fb = MEM_K0_TO_K1(SYS_AllocateFramebuffer(mode));
+    u32 top = (u32)SYS_GetArenaHi() < DOLXZ_HIGH ? (u32)SYS_GetArenaHi() : DOLXZ_HIGH;
+    u8 *fb_top = (u8 *)((top - VIDEO_GetFrameBufferSize(mode)) & ~31);
+    SYS_SetArenaHi(fb_top);
+    void *fb = MEM_K0_TO_K1(fb_top);
+    VIDEO_ClearFrameBuffer(mode, fb, COLOR_BLACK);
     console_init(fb, 20, 20, mode->fbWidth, mode->xfbHeight, mode->fbWidth * VI_DISPLAY_PIX_SZ);
     VIDEO_Configure(mode);
     VIDEO_SetNextFramebuffer(fb);
     VIDEO_SetBlack(false);
     VIDEO_Flush();
+    VIDEO_WaitVSync();
+    if (mode->viTVMode & VI_NON_INTERLACE)
+        VIDEO_WaitVSync();
+}
+
+static void fail(const char *rel)
+{
     printf("\n\n    Couldn't find %s on SD or USB.\n    Returning to the Wii Menu...", rel);
     sleep(5);
     SYS_ResetSystem(SYS_RETURNTOMENU, 0, 0);
@@ -168,12 +184,15 @@ int main(void)
     const char *rel = target + strlen(MARKER);
     char full[300];
     u32 size;
+    screen();
     u8 *file = find_app(rel, full, &size);
     if (!file)
         fail(rel);
 
     plan *p = (plan *)(((u32)SYS_GetArena2Hi() - 0x1000) & ~31);
     memset(p, 0, sizeof(*p));
+    // First, so its source in this program's .rodata is read before the app's sections land on it.
+    add(p, 0x80000C00, sc_handler, sc_handler_end - sc_handler, sc_handler_end - sc_handler);
     if (!memcmp(file, "\x7F" "ELF", 4))
         plan_elf(p, file);
     else

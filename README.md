@@ -36,7 +36,7 @@ Tested on a Wii and on a Wii U's vWii.
 > Have recovery protection in place before installing custom channels: BootMii/Priiloader on Wii, or
 > Priiloader on vWii.
 
-1. Download **`EmptySlotCreator-v1.0.0.zip`** from the releases page and extract it to the root of your SD
+1. Download **`EmptySlotCreator-v1.0.1.zip`** from the releases page and extract it to the root of your SD
    card, so you get `apps/emptyslot/`.
 2. Open **Empty Slot Creator** from the Homebrew Channel.
 

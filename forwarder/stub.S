@@ -59,3 +59,22 @@ nand_boot_stub:
 	ori	3,3,__app_start@l
 	mtctr	3
 	bctr
+
+# A self-contained "sc" handler, as older libogc left at 0xC00. dolxz-packed apps (GodModeWii) make a
+# system call before installing their own, and libogc 3's vector would jump into this forwarder's dead code.
+	.section .rodata
+	.balign	4
+	.globl	sc_handler, sc_handler_end
+sc_handler:
+	mtspr	274,9			# SPRG2
+	mtspr	275,10			# SPRG3
+	mfspr	9,1008			# HID0
+	ori	10,9,0x0008		# ABE: broadcast the sync
+	mtspr	1008,10
+	isync
+	sync
+	mtspr	1008,9
+	mfspr	9,274
+	mfspr	10,275
+	rfi
+sc_handler_end:

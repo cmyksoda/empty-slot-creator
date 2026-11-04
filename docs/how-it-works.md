@@ -45,12 +45,13 @@ of contents) says which one the console starts.
 
 **On a Wii**, that's our forwarder, a small program of about 200 lines. It:
 
-1. looks for the app on the SD card, then on a USB drive (waiting a few seconds
+1. puts up a plain black screen, so the app starts from a screen it knows;
+2. looks for the app on the SD card, then on a USB drive (waiting a few seconds
    for a hard drive to spin up);
-2. tries `boot.dol`, then `boot.elf`;
-3. loads the app into memory, and hands it its own path the way the Homebrew
+3. tries `boot.dol`, then `boot.elf`;
+4. loads the app into memory, and hands it its own path the way the Homebrew
    Channel does, so the app can find its files;
-4. jumps into it.
+5. jumps into it.
 
 If the app isn't there, it says so on screen and goes back to the Wii Menu.
 
