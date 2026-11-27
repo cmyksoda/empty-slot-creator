@@ -40,7 +40,7 @@ static void on_remote_power(s32 channel)
     power_pressed = true;
 }
 
-static void on_reset(u32 irq, void *context)
+static void on_reset(void)
 {
     reset_pressed = true;
 }

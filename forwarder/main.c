@@ -213,9 +213,9 @@ int main(void)
 
     fatUnmount("sd:");
     fatUnmount("usb:");
-    __io_wiisd.shutdown();
+    __io_wiisd.shutdown(&__io_wiisd);
     if (usb_mounted)
-        __io_usbstorage.shutdown();
+        __io_usbstorage.shutdown(&__io_usbstorage);
     SYS_ResetSystem(SYS_SHUTDOWN, 0, 0);
     u32 level __attribute__((unused));
     _CPU_ISR_Disable(level);

@@ -85,7 +85,7 @@ one on a PC instead? See [docs/from-scratch.md](docs/from-scratch.md) and
 - **The USB Loader GX team** for their forwarder, whose ticket and TMD the channel borrows.
 - **FIX94**, megazig, the TinyLoad authors and dimok for the [vWii NAND loader](https://github.com/FIX94/tiny-vwii-nand-loader).
 - **Team Twiizers / fail0verflow** for the Homebrew Channel, whose way of starting apps the channel copies.
-- **devkitPro** for devkitPPC and libogc.
+- **devkitPro** for devkitPPC and libfat, and **libogc2** (Extrems' fork of libogc).
 - Made by **cmyksoda**.
 
 ## License

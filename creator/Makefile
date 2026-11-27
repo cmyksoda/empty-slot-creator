@@ -3,11 +3,11 @@ ifeq ($(strip $(DEVKITPPC)),)
 $(error "Please set DEVKITPPC in your environment. export DEVKITPPC=<path to>devkitPPC")
 endif
 
-include $(DEVKITPPC)/wii_rules
+include $(DEVKITPRO)/libogc2/wii_rules
 
 TARGET		:=	boot
 BUILD		:=	build
-SOURCES		:=	source
+SOURCES		:=	source compat/source
 DATA		:=	data
 INCLUDES	:=
 
@@ -18,7 +18,7 @@ LDFLAGS	=	-g $(MACHDEP) -Wl,-Map,$(notdir $@).map
 
 LIBS	:=	-lfat -lwiiuse -lbte -logc -lm
 
-LIBDIRS	:=
+LIBDIRS	:=	$(CURDIR)/compat
 
 ifneq ($(BUILD),$(notdir $(CURDIR)))
 

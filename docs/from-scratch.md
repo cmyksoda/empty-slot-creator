@@ -6,7 +6,7 @@ each one. Use it to rebuild ours, or as a recipe for your own
 
 ## What you need
 
-- **devkitPro** with devkitPPC, libogc and libfat
+- **devkitPro** with devkitPPC, libogc2 and libfat
   ([install guide](https://devkitpro.org/wiki/Getting_Started)). On Windows,
   the devkitPro installer with "Wii development" ticked. Then
   `pacman -S wii-dev` if anything is missing.
