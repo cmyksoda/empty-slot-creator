@@ -46,7 +46,7 @@ The AES and SHA-1 run on the console's own crypto engine through IOS.
 
 ## Building
 
-Needs devkitPPC, libogc and libfat (devkitPro).
+Needs devkitPPC, libogc2 (Extrems' fork of libogc) and libfat (devkitPro).
 
 ```sh
 make templates   # copy the parent project's freshly built WADs into data/
